@@ -1,4 +1,5 @@
 import 'package:deliveryapp/theming_and_state_management/presentation/home/home_screen.dart';
+import 'package:deliveryapp/theming_and_state_management/presentation/widgets/delivery_button.dart';
 import 'package:flutter/material.dart';
 
 import '../theme.dart';
@@ -16,6 +17,7 @@ class LoginScreen extends StatelessWidget {
 
     return Scaffold(
       body: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           Expanded(
               flex: 2,
@@ -118,28 +120,15 @@ class LoginScreen extends StatelessWidget {
           ),
           Padding(
             padding: const EdgeInsets.all(25),
-            child: InkWell(
+            child: DeliveryButton(
+              text: 'Login',
               onTap: () {
                 Navigator.of(context).pushReplacement(
-                    MaterialPageRoute(builder: (context) => HomeScreen()));
-              },
-              child: Container(
-                width: double.infinity,
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(10),
-                  gradient: LinearGradient(
-                    begin: Alignment.centerRight,
-                    end: Alignment.centerLeft,
-                    colors: deliveryGradients,
+                  MaterialPageRoute(
+                    builder: (context) => HomeScreen(),
                   ),
-                ),
-                child: Padding(
-                  padding: const EdgeInsets.all(14.0),
-                  child: Text('Login',
-                      style: TextStyle(color: Colors.white),
-                      textAlign: TextAlign.center),
-                ),
-              ),
+                );
+              },
             ),
           )
         ],

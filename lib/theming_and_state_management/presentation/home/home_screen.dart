@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 
 import '../theme.dart';
+import 'cart/cart_screen.dart';
 import 'products/products_screen.dart';
+import 'profile/profile_screen.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({Key? key}) : super(key: key);
@@ -25,9 +27,15 @@ class _HomeScreenState extends State<HomeScreen> {
               children: [
                 ProductsScreen(),
                 Text('CurrentIndex 2: $currenIndex'),
-                Text('CurrentIndex 3: $currenIndex'),
+                CartScreen(
+                  onShopping: () {
+                    setState(() {
+                      currenIndex = 0;
+                    });
+                  },
+                ),
                 Text('CurrentIndex 4: $currenIndex'),
-                Text('CurrentIndex 5: $currenIndex'),
+                ProfileScreen(),
               ],
             ),
           ),
