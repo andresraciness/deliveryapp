@@ -160,11 +160,11 @@ class _EmptyCart extends StatelessWidget {
                   borderRadius: BorderRadius.circular(15),
                 ),
                 primary: DeliveryColors.purple),
-            onPressed: onShopping,
             child: Padding(
               padding: const EdgeInsets.symmetric(horizontal: 8.0),
               child: Text('Go Shopping'),
             ),
+            onPressed: onShopping,
           ),
         ),
       ],
