@@ -9,5 +9,7 @@ abstract class LocalRepositoryInterface {
   Future<void> clearAllData();
   Future<String?> saveToken(String token);
   Future<User?> getUser();
-  Future<User?> saveUser(User token);
+  Future<User?> saveUser(User user);
+  Future<void> saveDarkMode(bool darkMode);
+  Future<bool?> isDarkMode();
 }
