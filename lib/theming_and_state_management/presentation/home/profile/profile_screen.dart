@@ -1,3 +1,4 @@
+import 'package:deliveryapp/theming_and_state_management/data/datasource/local_repository_impl.dart';
 import 'package:deliveryapp/theming_and_state_management/presentation/theme.dart';
 import 'package:flutter/material.dart';
 
@@ -107,7 +108,9 @@ class ProfileScreen extends StatelessWidget {
                             borderRadius: BorderRadius.circular(15),
                           ),
                           primary: DeliveryColors.purple),
-                      onPressed: () {},
+                      onPressed: () {
+                        LocalRepositoryImpl().clearAllData();
+                      },
                       child: Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 8.0),
                         child: Text('Log Out'),
