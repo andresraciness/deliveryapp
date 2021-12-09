@@ -2,6 +2,7 @@ import 'package:deliveryapp/theming_and_state_management/domain/exception/auth_e
 import 'package:deliveryapp/theming_and_state_management/domain/request/login_request.dart';
 import 'package:deliveryapp/theming_and_state_management/domain/respository/api_repository.dart';
 import 'package:deliveryapp/theming_and_state_management/domain/respository/local_storage_repository.dart';
+import 'package:deliveryapp/theming_and_state_management/presentation/theme.dart';
 import 'package:flutter/widgets.dart';
 import 'package:get/get.dart';
 
@@ -23,6 +24,12 @@ class LoginController extends GetxController {
   final passwordTextController = TextEditingController();
   var loginState = LoginState.initial.obs;
 
+  @override
+  void onInit() {
+    validateTheme();
+    super.onInit();
+  }
+
   Future<bool> login() async {
     final username = usernameTextController.text;
     final password = passwordTextController.text;
@@ -40,6 +47,16 @@ class LoginController extends GetxController {
     } on AuthException catch (_) {
       loginState(LoginState.initial);
       return false;
+    }
+  }
+
+  void validateTheme() async {
+    final isDark = await localRepositoryInterface?.isDarkMode();
+
+    if (isDark != null) {
+      Get.changeTheme(isDark ? darkTheme : lightTheme);
+    } else {
+      Get.changeTheme(Get.isDarkMode ? darkTheme : lightTheme);
     }
   }
 }

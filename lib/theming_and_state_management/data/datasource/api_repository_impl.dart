@@ -37,14 +37,15 @@ class ApiRepositoryImpl extends ApiRepositoryInterface {
 
     if (login.username == 'andrew' && login.password == 'racin') {
       return LoginResponse(
-          user: User(
-            name: 'Andres Racines',
-            username: 'andrew',
-            image: 'assets/others/andrew.jpeg',
-          ),
-          token: 'AA111');
-    } else if (login.username == 'bunny' && login.password == 'bun') {
-      LoginResponse(
+        token: 'AA111',
+        user: User(
+          name: 'Andres Racines',
+          username: 'andrew',
+          image: 'assets/others/andrew.jpeg',
+        ),
+      );
+    } else if (login.username == 'bunny' && login.password == '123') {
+      return LoginResponse(
         token: 'AA222',
         user: User(
           name: 'Bugs Bunny',
@@ -59,7 +60,7 @@ class ApiRepositoryImpl extends ApiRepositoryInterface {
 
   @override
   Future<void> logout(String token) async {
-    print('removing toker from server');
+    print('removing toker from server $token');
   }
 
   @override

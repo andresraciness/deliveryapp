@@ -1,6 +1,8 @@
+import 'package:deliveryapp/theming_and_state_management/presentation/home/home_binding.dart';
 import 'package:deliveryapp/theming_and_state_management/presentation/home/home_screen.dart';
 import 'package:deliveryapp/theming_and_state_management/presentation/login/login_binding.dart';
 import 'package:deliveryapp/theming_and_state_management/presentation/login/login_screen.dart';
+import 'package:deliveryapp/theming_and_state_management/presentation/main_binding.dart';
 import 'package:deliveryapp/theming_and_state_management/presentation/splash/splash_binding.dart';
 import 'package:deliveryapp/theming_and_state_management/presentation/splash/splash_screen.dart';
 import 'package:get/route_manager.dart';
@@ -21,11 +23,16 @@ class DeliveryPages {
     GetPage(
       name: DeliveryRoutes.login,
       page: () => LoginScreen(),
-      binding: LoginBinding(),
+      bindings: [
+        MainBinding(),
+        LoginBinding(),
+      ],
     ),
-    GetPage(
-      name: DeliveryRoutes.home,
-      page: () => HomeScreen(),
-    ),
+    GetPage(name: DeliveryRoutes.home, page: () => HomeScreen(),
+        // binding: HomeBinding(),
+        bindings: [
+          MainBinding(),
+          HomeBinding(),
+        ]),
   ];
 }

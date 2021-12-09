@@ -7,6 +7,7 @@ const _prefusername = 'USERNAME';
 const _prefname = 'NAME';
 const _prefimage = 'IMAGE';
 const _pref_dark_theme = 'THEME_DARK';
+const no_image = 'assets/others/no_image.jpg';
 
 class LocalRepositoryImpl extends LocalRepositoryInterface {
   @override

@@ -39,6 +39,10 @@ final lightTheme = ThemeData(
   appBarTheme: AppBarTheme(
     centerTitle: true,
     color: DeliveryColors.white,
+    titleTextStyle: GoogleFonts.poppins().copyWith(
+        fontSize: 20,
+        color: DeliveryColors.purple,
+        fontWeight: FontWeight.bold),
     textTheme: GoogleFonts.poppinsTextTheme().copyWith(
         headline6: TextStyle(
             fontSize: 20,

@@ -1,42 +1,61 @@
-import 'package:deliveryapp/theming_and_state_management/data/in_memory_products.dart';
 import 'package:deliveryapp/theming_and_state_management/domain/models/products.dart';
+import 'package:deliveryapp/theming_and_state_management/domain/respository/api_repository.dart';
+import 'package:deliveryapp/theming_and_state_management/presentation/home/cart/cart_controller.dart';
+import 'package:deliveryapp/theming_and_state_management/presentation/home/products/products_controller.dart';
+import 'package:deliveryapp/theming_and_state_management/presentation/theme.dart';
 import 'package:deliveryapp/theming_and_state_management/presentation/widgets/delivery_button.dart';
 import 'package:flutter/material.dart';
-
-import '../../theme.dart';
+import 'package:get/get.dart';
 
 class ProductsScreen extends StatelessWidget {
-  const ProductsScreen({Key? key}) : super(key: key);
+  ProductsScreen({Key? key}) : super(key: key);
+
+  final controller = Get.put<ProductsController>(ProductsController(
+      apiRepositoryInterface: Get.find<ApiRepositoryInterface>()));
+
+  final cartController = Get.find<CartController>();
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Products'),
+        title: Text(
+          'Products',
+          style: TextStyle(),
+        ),
       ),
-      body: GridView.builder(
-          padding: const EdgeInsets.all(20),
-          itemCount: products.length,
-          gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-              crossAxisCount: 2,
-              childAspectRatio: 2 / 3,
-              crossAxisSpacing: 10,
-              mainAxisSpacing: 10),
-          itemBuilder: (context, index) {
-            final product = products[index];
-            return _ItemProduct(product: product);
-          }),
+      body: Obx(
+        () => controller.productList.isNotEmpty
+            ? GridView.builder(
+                padding: const EdgeInsets.all(20),
+                itemCount: controller.productList.length,
+                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                    crossAxisCount: 2,
+                    childAspectRatio: 2 / 3,
+                    crossAxisSpacing: 10,
+                    mainAxisSpacing: 10),
+                itemBuilder: (context, index) {
+                  final product = controller.productList[index];
+                  return _ItemProduct(
+                      product: product,
+                      onTap: () => cartController.add(product));
+                },
+              )
+            : Center(child: CircularProgressIndicator()),
+      ),
     );
   }
 }
 
 class _ItemProduct extends StatelessWidget {
-  final Product product;
-
-  const _ItemProduct({
+  _ItemProduct({
     Key? key,
     required this.product,
+    required this.onTap,
   }) : super(key: key);
+
+  final Product product;
+  final VoidCallback onTap;
 
   @override
   Widget build(BuildContext context) {
@@ -85,7 +104,7 @@ class _ItemProduct extends StatelessWidget {
               ),
               DeliveryButton(
                 paddingText: EdgeInsets.symmetric(vertical: 4),
-                onTap: () {},
+                onTap: onTap,
                 text: 'Add',
               )
             ],

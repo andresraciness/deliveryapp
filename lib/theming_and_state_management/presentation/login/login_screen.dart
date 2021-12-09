@@ -1,3 +1,4 @@
+import 'package:deliveryapp/theming_and_state_management/domain/exception/auth_exception.dart';
 import 'package:deliveryapp/theming_and_state_management/presentation/login/login_controller.dart';
 import 'package:deliveryapp/theming_and_state_management/presentation/routes/delivery_navigation.dart';
 import 'package:deliveryapp/theming_and_state_management/presentation/widgets/delivery_button.dart';
@@ -10,11 +11,15 @@ const logoSize = 45.0;
 
 class LoginScreen extends GetWidget<LoginController> {
   void login() async {
-    final result = await controller.login();
-    if (result) {
-      Get.offNamed(DeliveryRoutes.home);
-    } else {
-      Get.snackbar('Error', 'Login incorrect.');
+    try {
+      final result = await controller.login();
+      if (result) {
+        Get.offNamed(DeliveryRoutes.home);
+      } else {
+        Get.snackbar('Error', 'Login incorrect.');
+      }
+    } on AuthException catch (e) {
+      print(e);
     }
   }
 

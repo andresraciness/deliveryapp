@@ -1,20 +1,14 @@
+import 'package:deliveryapp/theming_and_state_management/presentation/home/cart/cart_controller.dart';
+import 'package:deliveryapp/theming_and_state_management/presentation/home/home_controller.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 
 import '../theme.dart';
 import 'cart/cart_screen.dart';
 import 'products/products_screen.dart';
 import 'profile/profile_screen.dart';
 
-class HomeScreen extends StatefulWidget {
-  const HomeScreen({Key? key}) : super(key: key);
-
-  @override
-  _HomeScreenState createState() => _HomeScreenState();
-}
-
-class _HomeScreenState extends State<HomeScreen> {
-  int currenIndex = 0;
-
+class HomeScreen extends GetWidget<HomeController> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -22,29 +16,29 @@ class _HomeScreenState extends State<HomeScreen> {
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           Expanded(
-            child: IndexedStack(
-              index: currenIndex,
-              children: [
-                ProductsScreen(),
-                Text('CurrentIndex 2: $currenIndex'),
-                CartScreen(
-                  onShopping: () {
-                    setState(() {
-                      currenIndex = 0;
-                    });
-                  },
-                ),
-                Text('CurrentIndex 4: $currenIndex'),
-                ProfileScreen(),
-              ],
+            child: Obx(
+              () => IndexedStack(
+                index: controller.indexSelected.value,
+                children: [
+                  ProductsScreen(),
+                  const Placeholder(),
+                  CartScreen(
+                    onShopping: () {
+                      controller.updateIndexSelected(0);
+                    },
+                  ),
+                  const Placeholder(),
+                  ProfileScreen(),
+                ],
+              ),
             ),
           ),
           _DeliveryNavigatorBar(
-              index: currenIndex,
+              index: controller.indexSelected.value,
               onIndexSelected: (index) {
-                setState(() {
-                  currenIndex = index;
-                });
+                // setState(() {
+                controller.updateIndexSelected(index);
+                // });
               })
         ],
       ),
@@ -55,8 +49,10 @@ class _HomeScreenState extends State<HomeScreen> {
 class _DeliveryNavigatorBar extends StatelessWidget {
   final int index;
   final ValueChanged<int> onIndexSelected;
+  final controller = Get.find<HomeController>();
+  final cartController = Get.find<CartController>();
 
-  const _DeliveryNavigatorBar({
+  _DeliveryNavigatorBar({
     Key? key,
     required this.index,
     required this.onIndexSelected,
@@ -103,19 +99,35 @@ class _DeliveryNavigatorBar extends StatelessWidget {
                 ),
               ),
               Material(
-                child: CircleAvatar(
-                  radius: 23,
-                  backgroundColor: DeliveryColors.purple,
-                  child: IconButton(
-                    icon: Icon(
-                      Icons.shopping_basket_outlined,
-                      size: 28,
-                      color: index == 2
-                          ? DeliveryColors.green
-                          : DeliveryColors.white,
+                child: Stack(
+                  children: [
+                    CircleAvatar(
+                      radius: 23,
+                      backgroundColor: DeliveryColors.purple,
+                      child: IconButton(
+                        icon: Icon(
+                          Icons.shopping_basket_outlined,
+                          size: 28,
+                          color: index == 2
+                              ? DeliveryColors.green
+                              : DeliveryColors.white,
+                        ),
+                        onPressed: () => onIndexSelected(2),
+                      ),
                     ),
-                    onPressed: () => onIndexSelected(2),
-                  ),
+                    Obx(
+                      () => Positioned(
+                          right: 0,
+                          child: cartController.totalItem.value == 0
+                              ? SizedBox.shrink()
+                              : CircleAvatar(
+                                  radius: 10,
+                                  backgroundColor: Colors.pinkAccent,
+                                  child:
+                                      Text(cartController.totalItem.value.toString()),
+                                )),
+                    )
+                  ],
                 ),
               ),
               Material(
@@ -130,12 +142,16 @@ class _DeliveryNavigatorBar extends StatelessWidget {
                 ),
               ),
               InkWell(
-                child: CircleAvatar(
-                  // child: Icon(Icons.person_outline),
-                  radius: 15,
-                  backgroundColor: Colors.blue,
-                ),
                 onTap: () => onIndexSelected(4),
+                child: Obx(() {
+                  final user = controller.user.value;
+                  return user.image == null
+                      ? const SizedBox.shrink()
+                      : CircleAvatar(
+                          radius: 15,
+                          backgroundImage: AssetImage(user.image ?? ''),
+                        );
+                }),
               )
             ],
           ),
