@@ -31,8 +31,9 @@ class ProfileScreen extends StatelessWidget {
 
     return Scaffold(
       appBar: AppBar(
-        elevation: 0,
+        // elevation: 0,
         title: Text('Profile'),
+        leading: SizedBox(),
       ),
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -49,13 +50,8 @@ class ProfileScreen extends StatelessWidget {
                   child: Padding(
                     padding: const EdgeInsets.all(4.0),
                     child: CircleAvatar(
-                      // backgroundColor: DeliveryColors.white,
                       backgroundImage: AssetImage(user.image ?? no_image),
                       radius: 50,
-                      // child: Icon(
-                      //   Icons.person_outline,
-                      //   size: 80,
-                      // ),
                     ),
                   ),
                 ),
@@ -108,17 +104,16 @@ class ProfileScreen extends StatelessWidget {
                           ),
                           Obx(
                             () => SwitchListTile(
-                              contentPadding: EdgeInsets.zero,
-                              title: Text(
-                                'Dark Mode',
-                                style: TextStyle(
-                                  fontSize: 14,
-                                  fontWeight: FontWeight.bold,
+                                contentPadding: EdgeInsets.zero,
+                                title: Text(
+                                  'Dark Mode',
+                                  style: TextStyle(
+                                    fontSize: 14,
+                                    fontWeight: FontWeight.bold,
+                                  ),
                                 ),
-                              ),
-                              onChanged: onThemeUpdated,
-                              value: controller.darkTheme.value
-                            ),
+                                onChanged: onThemeUpdated,
+                                value: controller.darkTheme.value),
                           )
                         ],
                       ),

@@ -33,13 +33,13 @@ class HomeScreen extends GetWidget<HomeController> {
               ),
             ),
           ),
-          _DeliveryNavigatorBar(
-              index: controller.indexSelected.value,
-              onIndexSelected: (index) {
-                // setState(() {
-                controller.updateIndexSelected(index);
-                // });
-              })
+          Obx(
+            () => _DeliveryNavigatorBar(
+                index: controller.indexSelected.value,
+                onIndexSelected: (index) {
+                  controller.updateIndexSelected(index);
+                }),
+          )
         ],
       ),
     );
@@ -123,8 +123,8 @@ class _DeliveryNavigatorBar extends StatelessWidget {
                               : CircleAvatar(
                                   radius: 10,
                                   backgroundColor: Colors.pinkAccent,
-                                  child:
-                                      Text(cartController.totalItem.value.toString()),
+                                  child: Text(cartController.totalItem.value
+                                      .toString()),
                                 )),
                     )
                   ],
