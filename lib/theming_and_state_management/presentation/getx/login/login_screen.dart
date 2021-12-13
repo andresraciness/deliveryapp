@@ -1,11 +1,11 @@
 import 'package:deliveryapp/theming_and_state_management/domain/exception/auth_exception.dart';
-import 'package:deliveryapp/theming_and_state_management/presentation/login/login_controller.dart';
-import 'package:deliveryapp/theming_and_state_management/presentation/routes/delivery_navigation.dart';
-import 'package:deliveryapp/theming_and_state_management/presentation/widgets/delivery_button.dart';
+import 'package:deliveryapp/theming_and_state_management/presentation/common/delivery_button.dart';
+import 'package:deliveryapp/theming_and_state_management/presentation/common/theme.dart';
+import 'package:deliveryapp/theming_and_state_management/presentation/getx/routes/delivery_navigation.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-import '../theme.dart';
+import 'login_controller.dart';
 
 const logoSize = 45.0;
 

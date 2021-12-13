@@ -1,7 +1,6 @@
+import 'package:deliveryapp/theming_and_state_management/main_clean_architecture_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-
-import 'theming_and_state_management/main_theming_and_state_management.dart';
 
 void main() {
   SystemChrome.setSystemUIOverlayStyle(
@@ -17,6 +16,6 @@ void main() {
 class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return MainThemingAndStateManagementApp();
+    return MainCleanArchitectureProvider();
   }
 }

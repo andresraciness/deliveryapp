@@ -1,6 +1,6 @@
-import 'package:deliveryapp/theming_and_state_management/presentation/splash/splash_controller.dart';
+import 'package:deliveryapp/theming_and_state_management/presentation/getx/splash/splash_controller.dart';
 import 'package:flutter/material.dart';
-import 'package:deliveryapp/theming_and_state_management/presentation/theme.dart';
+import 'package:deliveryapp/theming_and_state_management/presentation/common/theme.dart';
 import 'package:get/get.dart';
 
 class SplashScreen extends GetWidget<SplashController> {

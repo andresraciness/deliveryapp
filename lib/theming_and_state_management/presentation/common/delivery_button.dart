@@ -1,4 +1,4 @@
-import 'package:deliveryapp/theming_and_state_management/presentation/theme.dart';
+import 'package:deliveryapp/theming_and_state_management/presentation/common/theme.dart';
 import 'package:flutter/material.dart';
 
 class DeliveryButton extends StatelessWidget {

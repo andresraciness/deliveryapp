@@ -2,7 +2,7 @@ import 'package:deliveryapp/theming_and_state_management/domain/exception/auth_e
 import 'package:deliveryapp/theming_and_state_management/domain/request/login_request.dart';
 import 'package:deliveryapp/theming_and_state_management/domain/respository/api_repository.dart';
 import 'package:deliveryapp/theming_and_state_management/domain/respository/local_storage_repository.dart';
-import 'package:deliveryapp/theming_and_state_management/presentation/theme.dart';
+import 'package:deliveryapp/theming_and_state_management/presentation/common/theme.dart';
 import 'package:flutter/widgets.dart';
 import 'package:get/get.dart';
 

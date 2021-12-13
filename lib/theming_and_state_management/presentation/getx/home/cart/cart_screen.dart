@@ -1,7 +1,7 @@
 import 'package:deliveryapp/theming_and_state_management/domain/models/product_cart.dart';
-import 'package:deliveryapp/theming_and_state_management/presentation/home/cart/cart_controller.dart';
-import 'package:deliveryapp/theming_and_state_management/presentation/theme.dart';
-import 'package:deliveryapp/theming_and_state_management/presentation/widgets/delivery_button.dart';
+import 'cart_controller.dart';
+import 'package:deliveryapp/theming_and_state_management/presentation/common/theme.dart';
+import 'package:deliveryapp/theming_and_state_management/presentation/common/delivery_button.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 

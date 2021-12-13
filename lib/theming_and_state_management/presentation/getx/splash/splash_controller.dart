@@ -1,7 +1,7 @@
 import 'package:deliveryapp/theming_and_state_management/domain/respository/api_repository.dart';
 import 'package:deliveryapp/theming_and_state_management/domain/respository/local_storage_repository.dart';
-import 'package:deliveryapp/theming_and_state_management/presentation/routes/delivery_navigation.dart';
-import 'package:deliveryapp/theming_and_state_management/presentation/theme.dart';
+import 'package:deliveryapp/theming_and_state_management/presentation/common/theme.dart';
+import 'package:deliveryapp/theming_and_state_management/presentation/getx/routes/delivery_navigation.dart';
 import 'package:get/get.dart';
 
 class SplashController extends GetxController {

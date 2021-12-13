@@ -1,10 +1,9 @@
-import 'package:deliveryapp/theming_and_state_management/presentation/home/cart/cart_controller.dart';
-import 'package:deliveryapp/theming_and_state_management/presentation/home/home_controller.dart';
+import 'package:deliveryapp/theming_and_state_management/presentation/common/theme.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-
-import '../theme.dart';
+import 'cart/cart_controller.dart';
 import 'cart/cart_screen.dart';
+import 'home_controller.dart';
 import 'products/products_screen.dart';
 import 'profile/profile_screen.dart';
 

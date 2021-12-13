@@ -1,10 +1,12 @@
 import 'package:deliveryapp/theming_and_state_management/data/datasource/local_repository_impl.dart';
 import 'package:deliveryapp/theming_and_state_management/domain/exception/auth_exception.dart';
-import 'package:deliveryapp/theming_and_state_management/presentation/home/home_controller.dart';
-import 'package:deliveryapp/theming_and_state_management/presentation/routes/delivery_navigation.dart';
-import 'package:deliveryapp/theming_and_state_management/presentation/theme.dart';
+import 'package:deliveryapp/theming_and_state_management/presentation/common/theme.dart';
+import 'package:deliveryapp/theming_and_state_management/presentation/getx/home/home_controller.dart';
+import 'package:deliveryapp/theming_and_state_management/presentation/getx/routes/delivery_navigation.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+
+import '../home_bloc.dart';
 
 class ProfileScreen extends StatelessWidget {
   ProfileScreen({Key? key}) : super(key: key);
