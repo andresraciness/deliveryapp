@@ -1,22 +1,44 @@
 import 'package:deliveryapp/theming_and_state_management/domain/exception/auth_exception.dart';
+import 'package:deliveryapp/theming_and_state_management/domain/respository/api_repository.dart';
+import 'package:deliveryapp/theming_and_state_management/domain/respository/local_storage_repository.dart';
 import 'package:deliveryapp/theming_and_state_management/presentation/common/delivery_button.dart';
 import 'package:deliveryapp/theming_and_state_management/presentation/common/theme.dart';
-import 'package:deliveryapp/theming_and_state_management/presentation/getx/routes/delivery_navigation.dart';
+import 'package:deliveryapp/theming_and_state_management/presentation/provider/home/home_screen.dart';
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
+import 'package:provider/provider.dart';
 
-import 'login_controller.dart';
+import 'login_bloc.dart';
 
 const logoSize = 45.0;
 
-class LoginScreen extends GetWidget<LoginController> {
-  void login() async {
+class LoginScreen extends StatelessWidget {
+  LoginScreen._();
+
+  static Widget init(BuildContext context) {
+    return ChangeNotifierProvider(
+      create: (_) => LoginBloc(
+        apiRepositoryInterface: context.read<ApiRepositoryInterface>(),
+        localRepositoryInterface: context.read<LocalRepositoryInterface>(),
+      ),
+      builder: (_, __) => LoginScreen._(),
+    );
+  }
+
+  void login(BuildContext context) async {
     try {
-      final result = await controller.login();
+      final loginBloc = Provider.of<LoginBloc>(context, listen: false);
+      final result = await loginBloc.login();
       if (result) {
-        Get.offNamed(DeliveryRoutes.home);
+        Navigator.of(context).pushReplacement(MaterialPageRoute(
+          builder: (_) => HomeScreen.init(context),
+        ));
       } else {
-        Get.snackbar('Error', 'Login incorrect.');
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            backgroundColor: Colors.transparent,
+            content: Text('Error login incorrect.'),
+          ),
+        );
       }
     } on AuthException catch (e) {
       print(e);
@@ -28,6 +50,8 @@ class LoginScreen extends GetWidget<LoginController> {
     final size = MediaQuery.of(context).size;
     final width = size.width;
     final moreSize = 50.0;
+
+    final loginBloc = Provider.of<LoginBloc>(context, listen: true);
 
     return Scaffold(
       body: Stack(
@@ -106,7 +130,7 @@ class LoginScreen extends GetWidget<LoginController> {
                               ),
                         ),
                         TextField(
-                          controller: controller.usernameTextController,
+                          controller: loginBloc.usernameTextController,
                           decoration: InputDecoration(
                             hintText: 'Username',
                             prefixIcon: Icon(
@@ -128,7 +152,7 @@ class LoginScreen extends GetWidget<LoginController> {
                               ),
                         ),
                         TextField(
-                          controller: controller.passwordTextController,
+                          controller: loginBloc.passwordTextController,
                           decoration: InputDecoration(
                             hintText: 'Password',
                             prefixIcon: Icon(
@@ -147,25 +171,20 @@ class LoginScreen extends GetWidget<LoginController> {
                 padding: const EdgeInsets.all(25),
                 child: DeliveryButton(
                   text: 'Login',
-                  onTap: login,
+                  onTap: () => login(context),
                 ),
               )
             ],
           ),
           Positioned.fill(
-            child: Obx(() {
-              if (controller.loginState.value == LoginState.loading) {
-                return Container(
-                  color: Colors.black26,
-                  child: Center(
-                    child: CircularProgressIndicator(),
-                  ),
-                );
-              } else {
-                return const SizedBox.shrink();
-              }
-            }),
-          )
+              child: (loginBloc.loginState == LoginState.loading)
+                  ? Container(
+                      color: Colors.black26,
+                      child: Center(
+                        child: CircularProgressIndicator(),
+                      ),
+                    )
+                  : const SizedBox.shrink())
         ],
       ),
     );

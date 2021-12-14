@@ -1,14 +1,14 @@
 import 'package:deliveryapp/theming_and_state_management/domain/models/product_cart.dart';
 import 'package:deliveryapp/theming_and_state_management/domain/models/products.dart';
-import 'package:get/get.dart';
+import 'package:flutter/widgets.dart';
 
-class CartController extends GetxController {
-  RxList<ProductCart> cartList = <ProductCart>[].obs;
-  RxInt totalItem = 0.obs;
-  RxDouble totalPrice = 0.0.obs;
+class CartBloc extends ChangeNotifier {
+  List<ProductCart> cartList = <ProductCart>[];
+  int totalItem = 0;
+  double totalPrice = 0.0;
 
   void add(Product product) {
-    final temp = List<ProductCart>.from(cartList.value);
+    final temp = List<ProductCart>.from(cartList);
 
     bool found = false;
     for (var p in temp) {
@@ -20,7 +20,7 @@ class CartController extends GetxController {
     }
 
     if (!found) temp.add(ProductCart(product: product));
-    cartList.value = List<ProductCart>.from(temp);
+    cartList = List<ProductCart>.from(temp);
 
     calculateTotals(temp);
   }
@@ -28,16 +28,16 @@ class CartController extends GetxController {
   void increment(ProductCart product) {
     product.quantity += 1;
     // para que crear una nueva lista y que se actualice
-    cartList.value = List<ProductCart>.from(cartList.value);
-    calculateTotals(cartList.value);
+    cartList = List<ProductCart>.from(cartList);
+    calculateTotals(cartList);
   }
 
   void decrement(ProductCart product) {
     if (product.quantity > 1) {
       product.quantity -= 1;
       // para que crear una nueva lista y que se actualice
-      cartList.value = List<ProductCart>.from(cartList.value);
-      calculateTotals(cartList.value);
+      cartList = List<ProductCart>.from(cartList);
+      calculateTotals(cartList);
     }
   }
 
@@ -50,12 +50,13 @@ class CartController extends GetxController {
         (previousValue, element) =>
             (element.product.prince * element.quantity) + previousValue);
 
-    totalItem(total);
-    totalPrice(totalPriceTemp);
+    totalItem = total;
+    totalPrice = totalPriceTemp;
+    notifyListeners();
   }
 
   void deleteProduct(ProductCart productCart) {
     cartList.remove(productCart);
-    calculateTotals(cartList.value);
+    calculateTotals(cartList);
   }
 }

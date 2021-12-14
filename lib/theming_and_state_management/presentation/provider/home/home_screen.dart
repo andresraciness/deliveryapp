@@ -2,7 +2,11 @@ import 'package:deliveryapp/theming_and_state_management/data/datasource/local_r
 import 'package:deliveryapp/theming_and_state_management/domain/respository/api_repository.dart';
 import 'package:deliveryapp/theming_and_state_management/domain/respository/local_storage_repository.dart';
 import 'package:deliveryapp/theming_and_state_management/presentation/common/theme.dart';
+import 'package:deliveryapp/theming_and_state_management/presentation/provider/home/cart/cart_bloc.dart';
+import 'package:deliveryapp/theming_and_state_management/presentation/provider/home/cart/cart_screen.dart';
 import 'package:deliveryapp/theming_and_state_management/presentation/provider/home/home_bloc.dart';
+import 'package:deliveryapp/theming_and_state_management/presentation/provider/home/products/products_screen.dart';
+import 'package:deliveryapp/theming_and_state_management/presentation/provider/home/profile/profile_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -10,12 +14,16 @@ class HomeScreen extends StatelessWidget {
   HomeScreen._();
 
   static Widget init(BuildContext context) {
-    return ChangeNotifierProvider(
-      create: (_) => HomeBloc(
-        apiRepositoryInterface: context.read<ApiRepositoryInterface>(),
-        localRepositoryInterface: context.read<LocalRepositoryInterface>(),
-      )..loadUser(),
-      builder: (_, __) => HomeScreen._(),
+    return MultiProvider(
+      providers: [
+        ChangeNotifierProvider(
+          create: (_) => HomeBloc(
+            apiRepositoryInterface: context.read<ApiRepositoryInterface>(),
+            localRepositoryInterface: context.read<LocalRepositoryInterface>(),
+          )..loadUser(),
+          builder: (_, __) => HomeScreen._(),
+        ),
+      ],
     );
   }
 
@@ -31,17 +39,14 @@ class HomeScreen extends StatelessWidget {
             child: IndexedStack(
               index: bloc.indexSelected,
               children: [
-                // ProductsScreen(),
+                ProductsScreen.init(context),
                 const Placeholder(),
-
+                CartScreen(
+                  onShopping: () => bloc.updateIndexSelected(0),
+                ),
+                // const Placeholder(),
                 const Placeholder(),
-                const Placeholder(),
-                // CartScreen(
-                //   onShopping: () => bloc.updateIndexSelected(0),
-                // ),
-                const Placeholder(),
-                const Placeholder(),
-                // ProfileScreen(),
+                ProfileScreen.init(context),
               ],
             ),
           ),
@@ -69,6 +74,7 @@ class _DeliveryNavigatorBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final bloc = Provider.of<HomeBloc>(context);
+    final cartBloc = Provider.of<CartBloc>(context);
     final user = bloc.user;
 
     return Padding(
@@ -126,18 +132,15 @@ class _DeliveryNavigatorBar extends StatelessWidget {
                         onPressed: () => onIndexSelected(2),
                       ),
                     ),
-                    // Obx(
-                    //   () => Positioned(
-                    //       right: 0,
-                    //       child: cartController.totalItem.value == 0
-                    //           ? SizedBox.shrink()
-                    //           : CircleAvatar(
-                    //               radius: 10,
-                    //               backgroundColor: Colors.pinkAccent,
-                    //               child: Text(cartController.totalItem.value
-                    //                   .toString()),
-                    //             )),
-                    // )
+                    Positioned(
+                        right: 0,
+                        child: cartBloc.totalItem == 0
+                            ? SizedBox.shrink()
+                            : CircleAvatar(
+                                radius: 10,
+                                backgroundColor: Colors.pinkAccent,
+                                child: Text(cartBloc.totalItem.toString()),
+                              )),
                   ],
                 ),
               ),

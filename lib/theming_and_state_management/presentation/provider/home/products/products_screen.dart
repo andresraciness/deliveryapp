@@ -2,22 +2,29 @@ import 'package:deliveryapp/theming_and_state_management/domain/models/products.
 import 'package:deliveryapp/theming_and_state_management/domain/respository/api_repository.dart';
 import 'package:deliveryapp/theming_and_state_management/presentation/common/theme.dart';
 import 'package:deliveryapp/theming_and_state_management/presentation/common/delivery_button.dart';
-import 'package:deliveryapp/theming_and_state_management/presentation/getx/home/cart/cart_controller.dart';
+import 'package:deliveryapp/theming_and_state_management/presentation/provider/home/cart/cart_bloc.dart';
+import 'package:deliveryapp/theming_and_state_management/presentation/provider/home/products/products_bloc.dart';
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
-
-import 'products_controller.dart';
+import 'package:get/get_utils/src/extensions/export.dart';
+import 'package:provider/provider.dart';
 
 class ProductsScreen extends StatelessWidget {
-  ProductsScreen({Key? key}) : super(key: key);
+  ProductsScreen._();
 
-  final controller = Get.put<ProductsController>(ProductsController(
-      apiRepositoryInterface: Get.find<ApiRepositoryInterface>()));
-
-  final cartController = Get.find<CartController>();
+  static Widget init(BuildContext context) {
+    return ChangeNotifierProvider(
+      create: (_) => ProductsBloc(
+        apiRepositoryInterface: context.read<ApiRepositoryInterface>(),
+      )..loadProducts(),
+      builder: (_, __) => ProductsScreen._(),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
+    final productsBloc = context.watch<ProductsBloc>();
+    final cartBloc = Provider.of<CartBloc>(context);
+
     return Scaffold(
       appBar: AppBar(
         leading: SizedBox(),
@@ -26,25 +33,24 @@ class ProductsScreen extends StatelessWidget {
           style: TextStyle(),
         ),
       ),
-      body: Obx(
-        () => controller.productList.isNotEmpty
-            ? GridView.builder(
-                padding: const EdgeInsets.all(20),
-                itemCount: controller.productList.length,
-                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                    crossAxisCount: 2,
-                    childAspectRatio: 2 / 3,
-                    crossAxisSpacing: 10,
-                    mainAxisSpacing: 10),
-                itemBuilder: (context, index) {
-                  final product = controller.productList[index];
-                  return _ItemProduct(
-                      product: product,
-                      onTap: () => cartController.add(product));
-                },
-              )
-            : Center(child: CircularProgressIndicator()),
-      ),
+      body: productsBloc.productList.isNotEmpty
+          ? GridView.builder(
+              padding: const EdgeInsets.all(20),
+              itemCount: productsBloc.productList.length,
+              gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                  crossAxisCount: 2,
+                  childAspectRatio: 2 / 3,
+                  crossAxisSpacing: 10,
+                  mainAxisSpacing: 10),
+              itemBuilder: (context, index) {
+                final product = productsBloc.productList[index];
+                return _ItemProduct(
+                  product: product,
+                  onTap: () => cartBloc.add(product),
+                );
+              },
+            )
+          : Center(child: CircularProgressIndicator()),
     );
   }
 }

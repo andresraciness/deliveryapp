@@ -1,35 +1,59 @@
 import 'package:deliveryapp/theming_and_state_management/data/datasource/local_repository_impl.dart';
 import 'package:deliveryapp/theming_and_state_management/domain/exception/auth_exception.dart';
+import 'package:deliveryapp/theming_and_state_management/domain/respository/api_repository.dart';
+import 'package:deliveryapp/theming_and_state_management/domain/respository/local_storage_repository.dart';
 import 'package:deliveryapp/theming_and_state_management/presentation/common/theme.dart';
-import 'package:deliveryapp/theming_and_state_management/presentation/getx/home/home_controller.dart';
-import 'package:deliveryapp/theming_and_state_management/presentation/getx/routes/delivery_navigation.dart';
+import 'package:deliveryapp/theming_and_state_management/presentation/provider/login/login_screen.dart';
+import 'package:deliveryapp/theming_and_state_management/presentation/provider/home/home_bloc.dart';
+import 'package:deliveryapp/theming_and_state_management/presentation/provider/home/profile/profile_bloc.dart';
+import 'package:deliveryapp/theming_and_state_management/presentation/provider/main_bloc.dart';
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
-
-import '../home_bloc.dart';
+import 'package:provider/provider.dart';
 
 class ProfileScreen extends StatelessWidget {
-  ProfileScreen({Key? key}) : super(key: key);
+  ProfileScreen._();
 
-  final controller = Get.find<HomeController>();
+  static Widget init(BuildContext context) {
+    return ChangeNotifierProvider(
+      create: (_) => ProfileBloc(
+        apiRepositoryInterface: context.read<ApiRepositoryInterface>(),
+        localRepositoryInterface: context.read<LocalRepositoryInterface>(),
+      ),
+      builder: (_, __) => ProfileScreen._(),
+    );
+  }
 
-  Future<void> logout() async {
+  Future<void> logout(BuildContext context) async {
     try {
-      await controller.logOut();
-      Get.offAllNamed(DeliveryRoutes.login);
+      final profileBloc = Provider.of<ProfileBloc>(context, listen: false);
+      await profileBloc.logOut();
+      Navigator.of(context).pushAndRemoveUntil(
+        MaterialPageRoute(builder: (_) => LoginScreen.init(context)),
+        (route) => false,
+      );
     } on LogoutException catch (_) {
-      Get.snackbar('Error', 'Logout Error');
+      print(_);
+      Navigator.of(context).pushAndRemoveUntil(
+        MaterialPageRoute(builder: (_) => LoginScreen.init(context)),
+        (route) => false,
+      );
+      print('Exception capture');
     }
   }
 
-  void onThemeUpdated(bool isDark) async {
-    await controller.updateTheme(isDark);
-    Get.changeTheme(isDark ? darkTheme : lightTheme);
+  void onThemeUpdated(BuildContext context, bool isDark) {
+    final profileBloc = Provider.of<ProfileBloc>(context, listen: false);
+    profileBloc.updateTheme(isDark);
+    final mainBloc = context.read<MainBloc>();
+    mainBloc.updateTheme(isDark ? darkTheme : lightTheme);
   }
 
   @override
   Widget build(BuildContext context) {
-    final user = controller.user.value;
+    final homeBloc = Provider.of<HomeBloc>(context);
+    final profileBloc = Provider.of<ProfileBloc>(context);
+
+    final user = homeBloc.user;
 
     return Scaffold(
       appBar: AppBar(
@@ -52,14 +76,14 @@ class ProfileScreen extends StatelessWidget {
                   child: Padding(
                     padding: const EdgeInsets.all(4.0),
                     child: CircleAvatar(
-                      backgroundImage: AssetImage(user.image ?? no_image),
+                      backgroundImage: AssetImage(user?.image ?? no_image),
                       radius: 50,
                     ),
                   ),
                 ),
                 const SizedBox(height: 10),
                 Text(
-                  user.name ?? 'Username',
+                  user?.name ?? 'Username',
                   style: TextStyle(
                       fontWeight: FontWeight.bold,
                       color: Theme.of(context).accentColor),
@@ -99,24 +123,23 @@ class ProfileScreen extends StatelessWidget {
                                 color: DeliveryColors.green),
                           ),
                           Text(
-                            '${user.username}@email.com',
+                            '${user?.username ?? "email"}@email.com',
                             style: TextStyle(
                               color: Theme.of(context).accentColor,
                             ),
                           ),
-                          Obx(
-                            () => SwitchListTile(
-                                contentPadding: EdgeInsets.zero,
-                                title: Text(
-                                  'Dark Mode',
-                                  style: TextStyle(
-                                    fontSize: 14,
-                                    fontWeight: FontWeight.bold,
-                                  ),
+                          SwitchListTile(
+                              contentPadding: EdgeInsets.zero,
+                              title: Text(
+                                'Dark Mode',
+                                style: TextStyle(
+                                  fontSize: 14,
+                                  fontWeight: FontWeight.bold,
                                 ),
-                                onChanged: onThemeUpdated,
-                                value: controller.darkTheme.value),
-                          )
+                              ),
+                              onChanged: (change) =>
+                                  onThemeUpdated(context, change),
+                              value: profileBloc.isDark),
                         ],
                       ),
                     ),
@@ -130,7 +153,7 @@ class ProfileScreen extends StatelessWidget {
                           borderRadius: BorderRadius.circular(15),
                         ),
                         primary: DeliveryColors.purple),
-                    onPressed: logout,
+                    onPressed: () => logout(context),
                     child: Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 8.0),
                       child: Text('Log Out'),

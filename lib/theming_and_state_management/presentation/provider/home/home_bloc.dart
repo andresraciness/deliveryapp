@@ -31,14 +31,4 @@ class HomeBloc extends ChangeNotifier {
     notifyListeners();
   }
 
-  // Future<void> logOut() async {
-  //   final token = await localRepositoryInterface.getToken();
-
-  //   if (token != null) {
-  //     await apiRepositoryInterface.logout(token);
-  //     await localRepositoryInterface.clearAllData();
-  //   } else {
-  //     throw LogoutException();
-  //   }
-  // }
 }

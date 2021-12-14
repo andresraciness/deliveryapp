@@ -1,11 +1,11 @@
 import 'package:deliveryapp/theming_and_state_management/domain/models/product_cart.dart';
-import 'cart_controller.dart';
 import 'package:deliveryapp/theming_and_state_management/presentation/common/theme.dart';
 import 'package:deliveryapp/theming_and_state_management/presentation/common/delivery_button.dart';
+import 'package:deliveryapp/theming_and_state_management/presentation/provider/home/cart/cart_bloc.dart';
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
+import 'package:provider/provider.dart';
 
-class CartScreen extends GetWidget<CartController> {
+class CartScreen extends StatelessWidget {
   const CartScreen({
     Key? key,
     required this.onShopping,
@@ -15,23 +15,25 @@ class CartScreen extends GetWidget<CartController> {
 
   @override
   Widget build(BuildContext context) {
+    final cartBloc = Provider.of<CartBloc>(context, listen: true);
+
     return Scaffold(
       appBar: AppBar(
         leading: SizedBox(),
         title: Text('Shopping Cart'),
       ),
-      body: Obx(() {
-        return controller.totalItem.value == 0
-            ? _EmptyCart(onShopping: onShopping)
-            : _FullCart();
-      }),
+      body: cartBloc.totalItem == 0
+          ? _EmptyCart(onShopping: onShopping)
+          : _FullCart(),
     );
   }
 }
 
-class _FullCart extends GetWidget<CartController> {
+class _FullCart extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
+    final cartBloc = Provider.of<CartBloc>(context, listen: true);
+    final total = cartBloc.totalPrice.toStringAsFixed(2);
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
@@ -39,20 +41,18 @@ class _FullCart extends GetWidget<CartController> {
           flex: 3,
           child: Padding(
             padding: const EdgeInsets.symmetric(vertical: 20.0),
-            child: Obx(
-              () => ListView.builder(
-                  scrollDirection: Axis.horizontal,
-                  itemExtent: 230,
-                  itemCount: controller.cartList.length,
-                  itemBuilder: (context, index) {
-                    final productCart = controller.cartList[index];
-                    return _ShoppingCartProduct(
-                        productCart: productCart,
-                        onDelete: () => controller.deleteProduct(productCart),
-                        onIncrement: () => controller.increment(productCart),
-                        onDecrement: () => controller.decrement(productCart));
-                  }),
-            ),
+            child: ListView.builder(
+                scrollDirection: Axis.horizontal,
+                itemExtent: 230,
+                itemCount: cartBloc.cartList.length,
+                itemBuilder: (context, index) {
+                  final productCart = cartBloc.cartList[index];
+                  return _ShoppingCartProduct(
+                      productCart: productCart,
+                      onDelete: () => cartBloc.deleteProduct(productCart),
+                      onIncrement: () => cartBloc.increment(productCart),
+                      onDecrement: () => cartBloc.decrement(productCart));
+                }),
           ),
         ),
         Expanded(
@@ -116,20 +116,14 @@ class _FullCart extends GetWidget<CartController> {
                             color: Theme.of(context).accentColor,
                           ),
                         ),
-                        Obx(
-                          () {
-                            final total =
-                                controller.totalPrice.value.toStringAsFixed(2);
-                            return Text(
-                              '\$$total USD',
-                              style: TextStyle(
-                                fontSize: 16,
-                                fontWeight: FontWeight.bold,
-                                color: Theme.of(context).accentColor,
-                              ),
-                            );
-                          },
-                        ),
+                        Text(
+                          '\$$total USD',
+                          style: TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.bold,
+                            color: Theme.of(context).accentColor,
+                          ),
+                        )
                       ],
                     ),
                     Spacer(),
@@ -147,9 +141,12 @@ class _FullCart extends GetWidget<CartController> {
 }
 
 class _EmptyCart extends StatelessWidget {
-  final VoidCallback onShopping;
+  const _EmptyCart({
+    Key? key,
+    required this.onShopping,
+  }) : super(key: key);
 
-  const _EmptyCart({Key? key, required this.onShopping}) : super(key: key);
+  final VoidCallback onShopping;
 
   @override
   Widget build(BuildContext context) {
